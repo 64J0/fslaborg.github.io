@@ -1,49 +1,37 @@
 (**
 # F# Introduction III: Library Setup
 
-This guide shows an example setup for a library. This is not the only way on how to do this, but merely a possibility. As always, this guide is meant as a starting point to be expanded upon. 
-For example, unit tests and full buildchains with automatic releases can be added to this template. 
+This guide shows an example setup for a library. This is not the only way on how to do this, but merely a possibility. As always, this guide is meant as a starting point to be expanded upon.
+For example, unit tests and full buildchains with automatic releases can be added to this template.
 The installation of .NET 5.0 or dotnet SDK 3.1 LTS is required. It is also recommended to use [GitHub](https://github.com/) when following this example.
 
 ## Initializing the repository
 
-* An easy way to initialize a repository is by creating a new one using GitHub and cloning it.
-    * You can automatically add a readme, a .gitignore with many entries for Visual Studio already added and a license of choice.
-
-    ![](https://fslab.org/images/InitRepo.png)
-
-* After you cloned the initialized repository, it should look like this:  
-
-    ![](https://fslab.org/images/Lib1.png)
-
+An easy way to initialize a repository is by creating a new one using GitHub and cloning it.
+You can automatically add a readme, a .gitignore with many entries for Visual Studio already added and a license of choice.
+![](https://fslab.org/images/InitRepo.png)
+After you cloned the initialized repository, it should look like this:
+![](https://fslab.org/images/Lib1.png)
 ## Initializing the library
 
-* The stock library template is just fine (change framework if you know what you are doing):
-    `dotnet new classlib -lang F# -n "YourNameHere" --framework net5.0 -o src/YourNameHere`
-* Add an entry for the 'pkg' folder to your `.gitignore`
-* Create a `RELEASE_NOTES.md` file in the project root, make sure to add at least one version header like this:
+
+
 
 ```
 ### 0.0.1 - 28/7/2021
 ```
-* Add a solution to your projekt with `dotnet new sln --name YourNameHere`
-* After you completed the previous steps your folder should look like this:  
 
-    ![](https://fslab.org/images/Lib2.png)
 
 ## Initializing the buildchain with FAKE
 
-* Initialize a local tool manifest that will keep track of the usable local dotnet tools in this project.
-    * In the project root: `dotnet new tool-manifest`
-* In the project root: Install the fake cli as local tool: `dotnet tool install fake-cli`
-* In the project root: Install paket as local tool: `dotnet tool install paket`
-* In the project root: Create a new empty `build.fsx` file
-* Your folder should now look like this:  
-
-    ![](https://fslab.org/images/Lib3.png)
-
-* Open the `build.fsx` file (intellisense will not work right after creating it) and add the following content.
-
+Initialize a local tool manifest that will keep track of the usable local dotnet tools in this project.
+In the project root: `dotnet new tool-manifest`
+In the project root: Install the fake cli as local tool: `dotnet tool install fake-cli`
+In the project root: Install paket as local tool: `dotnet tool install paket`
+In the project root: Create a new empty `build.fsx` file
+Your folder should now look like this:
+![](https://fslab.org/images/Lib3.png)
+Open the `build.fsx` file (intellisense will not work right after creating it) and add the following content.
 First, lets reference the dependencies of the build script. In fake they are loaded via the `paket` manager:
 
 ```fsharp
@@ -111,8 +99,7 @@ let runDotNet cmd workingDir =
 (**
 Note: This `build.fsx` will be gradually epxanded
 
-* Add the `ProjectInfo` module to the `build.fsx` file, which will contain all relevant metadata for the buildchain except nuget package metadata (more on that later).
-* Replace all strings with the correct ones for your project.
+
 
 *)
 /// Metadata about the project
@@ -149,7 +136,6 @@ module ProjectInfo =
 
     let mutable isPrerelease = false
 (**
-* Add the `BasicTasks` module to the `build.fsx` file, which will contain the minimal build chain.
 
 *)
 /// Barebones, minimal build tasks
@@ -188,13 +174,11 @@ module BasicTasks =
         |>  Seq.iter (fun (fromDir, toDir) -> Shell.copyDir toDir fromDir (fun _ -> true))
     }
 (**
-* At the bottom of the `build.fsx` file, add the following lines:
 
 *)
 open BasicTasks
 BuildTask.runOrDefault copyBinaries
 (**
-* Create a `build.cmd` or `build.sh` file (or both) with the following lines:
 
 ### build.cmd
 
@@ -217,16 +201,12 @@ dotnet fake build "$@"
 
 ## Running the build script
 
-* You can now run your build via calling either `build.cmd` or `build.sh`.
-    * Optionally, you can pass the `-t` argument with it to execute a specific build task, e.g `./build.cmd -t clean` to execute the clean target.
-    * The first time you run the build.cmd will also enable intellisense for the fake build script
-* After building for the first time your folder will look like this:  
 
-    ![](https://fslab.org/images/Lib4.png)
+
+
 
 ## Packing a nuget package
 
-* Add nuget package metadata to the project file (src/LibraryExample/LibraryExample.fsproj) and adapt accordingly:
 
 ```
 <PropertyGroup>
@@ -244,7 +224,6 @@ dotnet fake build "$@"
 </PropertyGroup>
 ```
 
-* Add the `PackageTasks` module to the `build.fsx` file, which will take care of building nuget packages for both stable and prerelease packages:
 
 *)
 /// Package creation
@@ -299,17 +278,15 @@ module PackageTasks =
             failwith "aborted"
     }
 (**
-* You can test both targets with `./build.cmd -t Pack` or `./build.cmd -t PackPrerelease` respectively.
-* The packages can be found in the `pkg` folder in the project root. Since you do not want to host your nuget packages on github, do also remove this folder from source control by adding /pkg to your .gitignore file.
-* If you want users of your nuget package to have a pleasant debugging experience you can make use of [sourcelink](https://github.com/dotnet/sourcelink).
-    * To install this package, navigate to the folder of your project, e.g. src/LibraryExample and call: `dotnet add package Microsoft.SourceLink.GitHub --version 1.0.0`
+
+
+
 
 ## Documentation
 
-* In the project root: Install fsdocs as local tool: `dotnet tool install FSharp.Formatting.CommandTool`
-* In the project root: Install the fslab documentation template: `dotnet new -i FsLab.DocumentationTemplate::*`
-* Initialize the fslab documentation template: `dotnet new fslab-docs`
-* Add the `DocumentationTasks` module to the `build.fsx` file, which will take care initializing documentation files and developing them:
+
+
+
 
 *)
 /// Build tasks for documentation setup and development
@@ -347,17 +324,13 @@ module DocumentationTasks =
             "./"
     }
 (**
-* To create a new documentation file, run `./build.cmd -t InitDocsPage`
-* Add `tmp/` to `.gitignore`
-* To run fsdocs in watchmode (hot reaload local hosting of your docs for live development), run `dotnet fsdocs watch`
-* Your repository should now look like this:  
 
-    ![](https://fslab.org/images/Lib5.png)
+
+
 
 ## Adding nuget packages
 
-* Navigate to your project folder (i. e. `src/LibraryExample`)
-* If you want to specify a package source other than nuget.com (e.g. a local package) you can specify other sources after adding a nuget.config file to your project root:
+
 
 ```
 <?xml version="1.0" encoding="utf-8"?>
@@ -365,7 +338,6 @@ module DocumentationTasks =
 </configuration>
 ```
 
-* The following example would add the local lib folder as a new nuget source to your local nuget.config file: `dotnet nuget add source ./lib --configfile nuget.config`
 
 ```
 <?xml version="1.0" encoding="utf-8"?>
@@ -376,7 +348,6 @@ module DocumentationTasks =
 </configuration>
 ```
 
-* Calling `dotnet add package PackageName --version PackageVersion` will still start to search for the package on nuget.com, but if this call is unsuccesful, Package source 1 will be used as a fallback. For a more complete view on how to use nuget.config files please visit the [offical documentation](https://docs.microsoft.com/en-us/nuget/consume-packages/configuring-nuget-behavior) or have a look at [this](https://blogs.naxam.net/configure-nuget-package-sources-for-your-project-cd8b96397360) blog post.
 
 *)
 
