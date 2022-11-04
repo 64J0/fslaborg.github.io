@@ -5,18 +5,25 @@
 
 # Replicate quality control
 
-**Summary:** This tutorial demonstrates an example workflow using different FsLab libraries. The aim is to check the quality of replicate measurements by clustering the samples.
+
+_Summary:_ This tutorial demonstrates an example workflow using different FsLab libraries. The aim is to check the quality of replicate measurements by clustering the samples.
+
 
 ## Introduction
 
-In biology and other sciences, experimental procedures are often repeated several times in the same conditions. These resulting samples are called replicates.
+In biology and other sciences, experimental procedures are often repeated several times in the same conditions. These resulting samples are called replicates. 
 Replicates are especially useful to check for the reproducibility of the results and to boost their trustability.
 
-One metric for the quality of the measurements is rather easy in principle. Samples received from a similar procedure should also result in similar measurements.
+One metric for the quality of the measurements is rather easy in principle. Samples received from a similar procedure should also result in similar measurements. 
 Therefore just checking if replicates are more similar than other samples can already hand to the experimenter some implications about the quality of his samples.
-This is especially useful when considering that usually - as the ground truth is unknown - this trustability is difficult to measure.
+This is especially useful when considering that usually - as the ground truth is unknown - this trustability is difficult to measure. 
 
 In this tutorial, a simple workflow will be presented for how to visualize the clustering of replicates in an experiment. For this, 3 FsLab libraries will be used:
+
+0. [FSharp.Data](https://fsprojects.github.io/FSharp.Data/) for retreiving the data file
+1. [Deedle](https://github.com/fslaborg/Deedle) for reading a frame containing the data
+2. & 3. [FSharp.Stats](https://fslab.org/FSharp.Stats/) to impute missing values and cluster the samples
+4. [CyJS.NET](https://fslab.org/Cyjs.NET/) to visualize the results
 
 
 ## Referencing packages
@@ -30,11 +37,12 @@ In this tutorial, a simple workflow will be presented for how to visualize the c
 do fsi.AddPrinter(fun (printer:Deedle.Internal.IFsiFormattable) -> "\n" + (printer.Format()))
 ```
 
-## Loading Data
+## Loading Data 
 
-In this tutorial, an in silico generated dataset is used.
+In this tutorial, an in silico generated dataset is used.  
 
 `FSharp.Data` and `Deedle` are used to load the data into the fsi.
+
 
 *)
 open FSharp.Data
@@ -84,8 +92,9 @@ Gene99 -> <missing>        1170.12951077744 1103.50236480969 1212.87417318883 12
 
 Missing data is a constant companion of many data scientists. And it's not the best company, as missing values [can introduce a substantial amount of bias, make the handling and analysis of the data more arduous, and create reductions in efficiency](https://en.wikipedia.org/wiki/Imputation_(statistics)).
 
-To tackle this, missing values can be substituted in a step called `imputation`. Different approaches for this exist. Here a k-nearest neighbour imputation is shown, which works as follows:
+To tackle this, missing values can be substituted in a step called `imputation`. Different approaches for this exist. Here a k-nearest neighbour imputation is shown, which works as follows: 
 For each observation with missing values, the k most similar other observations are chosen. Then the missing value of this observation is substituted by the mean of these values in the neighbouring observations.
+
 
 *)
 open FSharp.Stats
@@ -141,6 +150,7 @@ Gene99 -> 1162.515191125715 1170.12951077744 1103.50236480969  1212.87417318883 
 ## Hierarchical clustering
 
 To sort the level of closeness between samples, we perform a hierarchical clustering. Details about this can be found [here](003_clustering_hierarchical.html) and [here](https://fslab.org/FSharp.Stats/Clustering.html#Hierarchical-clustering).
+
 
 *)
 open FSharp.Stats.ML.Unsupervised
@@ -268,9 +278,10 @@ No value returned by any evaluator
 
 ## Interpretation
 
-As can be seen in the graph, replicates of one condition cluster together. This is a good sign for the quality of the experiment.
+As can be seen in the graph, replicates of one condition cluster together. This is a good sign for the quality of the experiment. 
 If one replicate of a condition does not behave this way, it can be considered an outlier.
 If the replicates don't cluster together at all, there might be some problems with the experiment.
+
 
 *)
 
